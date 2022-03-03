@@ -1,12 +1,11 @@
 import logging
 import os
 import sys
-from dotenv import load_dotenv, dotenv_values
+from dotenv import load_dotenv
 from logging import StreamHandler
 import requests
 import telegram
 import time
-from telegram import Bot
 from http import HTTPStatus
 import exceptions as ex
 
@@ -42,14 +41,13 @@ def send_message(bot, message):
     try:
         bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message)
         logger.info(f'В чат отправлено сообщение {message}.')
-    except:
-        raise ex.SendMessageFailureException('Ошибка отправки сообщения.')
+    except ex.SendMessageFailureException('Ошибка отправки сообщения.'):
         logger.error(exc_info=True)
 
 
 def get_api_answer(current_timestamp):
-    """Получает ответ от API, возвращает ответ,
-    преобразованный в формат python.
+    """Получает ответ от API.
+    Возвращает ответ, преобразованный в формат python.
     """
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
@@ -63,9 +61,10 @@ def get_api_answer(current_timestamp):
     response = response.json()
     return response
 
+
 def check_response(response):
-    """Проверяет полученный от API ответ,
-    возвращает список домашних работ.
+    """Проверяет полученный от API ответ.
+    Возвращает список домашних работ.
     """
     if type(response) != dict:
         raise TypeError('Ответ от API имеет некорректный тип.')
@@ -85,8 +84,8 @@ def check_response(response):
 
 
 def parse_status(homework):
-    """Вытаскивает из полученного ответа статус последней домашней работы,
-    возвращает сообщение, которое будет отправлено в чат.
+    """Вытаскивает из полученного ответа статус последней домашней работы.
+    Возвращает сообщение, которое будет отправлено в чат.
     """
     homework_name = homework.get('homework_name')
     if 'homework_name' not in homework:
@@ -114,7 +113,7 @@ def check_tokens():
     """Проверяет, есть ли все необходимые переменные;
     прерывает работу скрипта, если не находит какую-то из переменных.
     """
-    env_vars = [PRACTICUM_TOKEN, TELEGRAM_TOKEN,TELEGRAM_CHAT_ID]
+    env_vars = [PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID]
     for token in env_vars:
         if token is None:
             return False
@@ -122,10 +121,9 @@ def check_tokens():
                 f'Отсутствует обязательная переменная окружения: {token}.'
                 'Программа принудительно остановлена.'
             )
-            sys.exit(0) 
+            sys.exit(0)
         else:
             return True
-        
 
 
 def main():
