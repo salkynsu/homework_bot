@@ -145,8 +145,6 @@ def main():
             message = f'Сбой в работе программы: {error}'
             logger.error(error, exc_info=True)
             time.sleep(RETRY_TIME)
-        # else:
-        #     ...
 
 
 if __name__ == '__main__':
